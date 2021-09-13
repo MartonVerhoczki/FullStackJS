@@ -6,14 +6,20 @@ const Header = (props) => {
 
 const Content = (props) => {
   return props.parts.map((part) => (
-    <p>
-      {part.title} {part.numberOfExcercises}
-    </p>
+    <Part title={part.title} numberOfExcercises={part.numberOfExcercises} />
   ));
 };
 
 const Total = (props) => {
   return <p>Number of exercises {props.sum}</p>;
+};
+
+const Part = (props) => {
+  return (
+    <p>
+      {props.title} {props.numberOfExcercises}
+    </p>
+  );
 };
 
 const App = () => {

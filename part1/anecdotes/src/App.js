@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 const App = () => {
   const anecdotes = [
@@ -13,16 +13,26 @@ const App = () => {
 
   const [selected, setSelected] = useState(0);
   const [votes, setVotes] = useState(new Array(anecdotes.length).fill(0));
+  const [max_, setMax_] = useState(0);
 
   const incrementVote = (index) => {
     let items = [...votes];
     items[index]++;
     setVotes(items);
-    console.log(votes);
+  };
+
+  useEffect(() => {
+    calculateMax();
+  }, [votes]);
+
+  const calculateMax = () => {
+    const newMax = votes.indexOf(Math.max(...votes));
+    setMax_(newMax);
   };
 
   return (
     <div>
+      <h1>Andecdote of the day</h1>
       <p>{anecdotes[selected]}</p>
       <p>Votes: {votes[selected]}</p>
       <button
@@ -39,6 +49,9 @@ const App = () => {
       >
         Next anecdote
       </button>
+
+      <h1>Anecdote with most votes</h1>
+      <p>{anecdotes[max_]}</p>
     </div>
   );
 };

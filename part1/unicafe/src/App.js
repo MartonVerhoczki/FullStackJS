@@ -12,6 +12,8 @@ const Feedback = ({ clickHandler }) => {
 };
 
 const Statistics = ({ statObject }) => {
+  if (statObject.Good === 0 && statObject.Neutral === 0 && statObject.Bad === 0)
+    return <p>No feedback given</p>;
   return (
     <>
       <h1>Statistics</h1>

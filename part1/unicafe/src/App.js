@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 
-const Feedback = ({ goodClick, neutralClick, badClick }) => {
+const Feedback = ({ clickHandler }) => {
   return (
     <>
       <h1>Give feedback</h1>
-      <Button text="Good" onClick={goodClick} />
-      <Button text="Neutral" onClick={neutralClick} />
-      <Button text="Bad" onClick={badClick} />
+      <Button text="Good" onClick={() => clickHandler("good")} />
+      <Button text="Neutral" onClick={() => clickHandler("neutral")} />
+      <Button text="Bad" onClick={() => clickHandler("bad")} />
     </>
   );
 };
@@ -37,19 +37,40 @@ const App = () => {
   const [good, setGood] = useState(0);
   const [neutral, setNeutral] = useState(0);
   const [bad, setBad] = useState(0);
+  const [all, setAll] = useState(0);
+  const [average, setAverage] = useState(0);
 
-  const increaseGood = () => setGood(good + 1);
-  const increaseNeutral = () => setNeutral(neutral + 1);
-  const increaseBad = () => setBad(bad + 1);
+  const handleClick = (feedback) => {
+    setAll(all + 1);
+    if (feedback === "good") {
+      setGood(good + 1);
+      setAverage(average + 1);
+    } else if (feedback === "neutral") {
+      setNeutral(neutral + 1);
+    } else if (feedback === "bad") {
+      setBad(bad + 1);
+      setAverage(average - 1);
+    }
+  };
+
+  const positivePercentage = () => {
+    const result = (good / all) * 100;
+    return result.toString().concat("%");
+  };
 
   return (
     <>
-      <Feedback
-        goodClick={increaseGood}
-        neutralClick={increaseNeutral}
-        badClick={increaseBad}
+      <Feedback clickHandler={handleClick} />
+      <Statistics
+        statObject={{
+          Good: good,
+          Neutral: neutral,
+          Bad: bad,
+          All: all,
+          Average: average / all,
+          Positive: positivePercentage(),
+        }}
       />
-      <Statistics statObject={{ Good: good, Neutral: neutral, Bad: bad }} />
     </>
   );
 };

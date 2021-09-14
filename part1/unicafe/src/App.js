@@ -18,14 +18,16 @@ const Statistics = ({ statObject }) => {
     <>
       <h1>Statistics</h1>
       <table>
-        {Object.entries(statObject).map((value, index) => {
-          return (
-            <tr>
-              <td>{value[0]}</td>
-              <td>{value[1]}</td>
-            </tr>
-          );
-        })}
+        <tbody>
+          {Object.entries(statObject).map((value, index) => {
+            return (
+              <tr key={index}>
+                <td>{value[0]}</td>
+                <td>{value[1]}</td>
+              </tr>
+            );
+          })}
+        </tbody>
       </table>
     </>
   );

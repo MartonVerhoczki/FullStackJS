@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
+import AppService from "./service/AppService";
 
 const Filter = ({ filter, setFilter }) => {
   const handleFilter = (event) => {
@@ -26,9 +27,11 @@ const PersonForm = ({
     if (persons.map((person) => person.name).includes(newName)) {
       alert(`${newName} is already added to phonebook`);
     } else {
-      let copy = [...persons];
-      copy.push({ name: newName, number: newNumber });
-      setPersons(copy);
+      AppService.create({ name: newName, number: newNumber }).then((person) => {
+        let copy = [...persons];
+        copy.push(person);
+        setPersons(copy);
+      });
     }
   };
 

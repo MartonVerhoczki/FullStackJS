@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import AppService from "./service/AppService";
+import "./App.css";
 
 const Filter = ({ filter, setFilter }) => {
   const handleFilter = (event) => {
@@ -21,6 +22,7 @@ const PersonForm = ({
   setNewName,
   newNumber,
   setNewNumber,
+  setSuccessMessage,
 }) => {
   const handleNewPerson = (event) => {
     event.preventDefault();
@@ -31,6 +33,8 @@ const PersonForm = ({
         let copy = [...persons];
         copy.push(person);
         setPersons(copy);
+        setSuccessMessage(`${person.name} successfully added to contacts`);
+        setTimeout(() => setSuccessMessage(null), 5000);
       });
     }
   };
@@ -72,11 +76,20 @@ const Persons = ({ persons, setPersons, filter }) => {
     ));
 };
 
+const Notification = ({ message }) => {
+  if (message === null) {
+    return null;
+  }
+
+  return <div className="success">{message}</div>;
+};
+
 const App = () => {
   const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [filter, setFilter] = useState("");
+  const [successMessage, setSuccessMessage] = useState(null);
 
   useEffect(() => {
     axios
@@ -87,6 +100,7 @@ const App = () => {
   return (
     <>
       <h2>Phonebook</h2>
+      <Notification message={successMessage} />
       <Filter filter={filter} setFilter={setFilter} />
       <PersonForm
         persons={persons}
@@ -95,6 +109,7 @@ const App = () => {
         setNewName={setNewName}
         newNumber={newNumber}
         setNewNumber={setNewNumber}
+        setSuccessMessage={setSuccessMessage}
       />
 
       <h2>Numbers</h2>

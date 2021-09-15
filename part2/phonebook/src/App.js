@@ -50,7 +50,14 @@ const PersonForm = ({
   );
 };
 
-const Persons = ({ persons, filter }) => {
+const Persons = ({ persons, setPersons, filter }) => {
+  const handleDelete = (person) => {
+    if (window.confirm(`Are you sure you want to delete ${person.name}?`)) {
+      AppService.remove(person.id);
+      setPersons(persons.filter((p) => p.id !== person.id));
+    }
+  };
+
   return persons
     .filter((person) =>
       person.name.toLowerCase().includes(filter.toLowerCase())
@@ -60,6 +67,7 @@ const Persons = ({ persons, filter }) => {
         <p>
           {person.name} - {person.number}
         </p>
+        <button onClick={() => handleDelete(person)}>Delete</button>
       </div>
     ));
 };
@@ -90,7 +98,7 @@ const App = () => {
       />
 
       <h2>Numbers</h2>
-      <Persons persons={persons} filter={filter} />
+      <Persons persons={persons} setPersons={setPersons} filter={filter} />
     </>
   );
 };

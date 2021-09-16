@@ -1,25 +1,26 @@
 import React, { useState } from "react";
 
-const Feedback = ({ clickHandler }) => {
+const Feedback = ({ handleFeedback }) => {
   return (
     <>
       <h1>Give feedback</h1>
-      <Button text="Good" onClick={() => clickHandler("good")} />
-      <Button text="Neutral" onClick={() => clickHandler("neutral")} />
-      <Button text="Bad" onClick={() => clickHandler("bad")} />
+      <Button text="Good" onClick={handleFeedback("good")} />
+      <Button text="Neutral" onClick={handleFeedback("neutral")} />
+      <Button text="Bad" onClick={handleFeedback("bad")} />
     </>
   );
 };
 
-const Statistics = ({ statObject }) => {
-  if (statObject.Good === 0 && statObject.Neutral === 0 && statObject.Bad === 0)
+const Statistics = ({ statistics }) => {
+  if (statistics.all === 0) {
     return <p>No feedback given</p>;
+  }
   return (
     <>
       <h1>Statistics</h1>
       <table>
         <tbody>
-          {Object.entries(statObject).map((value, index) => {
+          {Object.entries(statistics).map((value, index) => {
             return (
               <tr key={index}>
                 <td>{value[0]}</td>
@@ -38,41 +39,49 @@ const Button = ({ text, onClick }) => {
 };
 
 const App = () => {
-  const [good, setGood] = useState(0);
-  const [neutral, setNeutral] = useState(0);
-  const [bad, setBad] = useState(0);
-  const [all, setAll] = useState(0);
-  const [average, setAverage] = useState(0);
+  const [statistics, setStatistics] = useState({
+    good: 0,
+    neutral: 0,
+    bad: 0,
+    all: 0,
+    average: 0,
+  });
 
-  const handleClick = (feedback) => {
-    setAll(all + 1);
+  const handleFeedback = (feedback) => (event) => {
+    const { good, average, neutral, bad, all } = statistics;
     if (feedback === "good") {
-      setGood(good + 1);
-      setAverage(average + 1);
+      setStatistics({
+        ...statistics,
+        good: good + 1,
+        average: average + 1,
+        all: all + 1,
+      });
     } else if (feedback === "neutral") {
-      setNeutral(neutral + 1);
+      setStatistics({ ...statistics, neutral: neutral + 1, all: all + 1 });
     } else if (feedback === "bad") {
-      setBad(bad + 1);
-      setAverage(average - 1);
+      setStatistics({
+        ...statistics,
+        bad: bad + 1,
+        average: average - 1,
+        all: all + 1,
+      });
     }
   };
 
   const positivePercentage = () => {
-    const result = (good / all) * 100;
+    const result = (statistics.good / statistics.all) * 100;
     return result.toString().concat("%");
   };
 
+  console.log(statistics);
+
   return (
     <>
-      <Feedback clickHandler={handleClick} />
+      <Feedback handleFeedback={handleFeedback} />
       <Statistics
-        statObject={{
-          Good: good,
-          Neutral: neutral,
-          Bad: bad,
-          All: all,
-          Average: average / all,
-          Positive: positivePercentage(),
+        statistics={{
+          ...statistics,
+          positive: positivePercentage(),
         }}
       />
     </>

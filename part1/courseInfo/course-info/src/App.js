@@ -47,7 +47,7 @@ const App = () => {
     },
   ];
 
-  return <Course courses={courses} />;
+  return courses.map((course) => <Course course={course} />);
 };
 
 export default App;

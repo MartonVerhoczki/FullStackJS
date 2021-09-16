@@ -1,5 +1,29 @@
 import React, { useState, useEffect } from "react";
 
+const Anecdote = ({ header, text }) => {
+  return (
+    <>
+      <h1>{header}</h1>
+      <p>{text}</p>
+    </>
+  );
+};
+
+const Votes = ({ numOfVotes, voteHandler }) => {
+  return (
+    <>
+      <p>Votes: {numOfVotes}</p>
+      <button onClick={voteHandler()}>Vote</button>
+    </>
+  );
+};
+
+const RandomButton = ({ text, collection, callback }) => {
+  const randomIndex = Math.floor(Math.random() * collection.length);
+  const randomItem = collection[randomIndex];
+  return <button onClick={callback(randomItem)}>{text}</button>;
+};
+
 const App = () => {
   const anecdotes = [
     "If it hurts, do it more often",
@@ -15,43 +39,33 @@ const App = () => {
   const [votes, setVotes] = useState(new Array(anecdotes.length).fill(0));
   const [max_, setMax_] = useState(0);
 
-  const incrementVote = (index) => {
+  const incrementVote = () => () => {
     let items = [...votes];
-    items[index]++;
+    items[selected]++;
     setVotes(items);
   };
 
   useEffect(() => {
-    calculateMax();
+    setMax_(getMax());
   }, [votes]);
 
-  const calculateMax = () => {
-    const newMax = votes.indexOf(Math.max(...votes));
-    setMax_(newMax);
+  const getMax = () => votes.indexOf(Math.max(...votes));
+
+  const handleNextAnecdote = (anecdote) => (event) => {
+    const index = anecdotes.indexOf(anecdote);
+    setSelected(index === selected ? (index + 1) % anecdotes.length : index);
   };
 
   return (
     <div>
-      <h1>Andecdote of the day</h1>
-      <p>{anecdotes[selected]}</p>
-      <p>Votes: {votes[selected]}</p>
-      <button
-        onClick={() => {
-          incrementVote(selected);
-        }}
-      >
-        Vote
-      </button>
-      <button
-        onClick={() =>
-          setSelected(Math.floor(Math.random() * anecdotes.length))
-        }
-      >
-        Next anecdote
-      </button>
-
-      <h1>Anecdote with most votes</h1>
-      <p>{anecdotes[max_]}</p>
+      <Anecdote header="Andecdote of the day" text={anecdotes[selected]} />
+      <Votes numOfVotes={votes[selected]} voteHandler={incrementVote} />
+      <RandomButton
+        text="Next anecdote"
+        collection={anecdotes}
+        callback={handleNextAnecdote}
+      />
+      <Anecdote header="Anecdote with most votes" text={anecdotes[max_]} />
     </div>
   );
 };
